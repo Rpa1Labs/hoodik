@@ -1,0 +1,29 @@
+services:
+  hoodik-backend:
+    container_name: hoodik-backend
+    build: 
+      context: ../
+      dockerfile: ./docker-dev/back/Dockerfile
+    ports:
+      - "5443:5443"
+    volumes:
+      - ../:/hoodik
+      - ./certificates:/data/
+    depends_on:
+      - hoodik-frontend
+  hoodik-frontend:
+    container_name: hoodik-frontend
+    environment:
+      - BIND_HOST=127.0.0.1
+      - BIND_PORT=5443
+      - DEV_FRONTEND_PORT=5173
+      - APP_URL=https://127.0.0.1:5443
+    build:
+      context: ../
+      dockerfile: ./docker-dev/front/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../:/hoodik
+      - ./certificates:/data/
+
