@@ -7,7 +7,6 @@ import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import { serviceWorkerPlugin } from './plugins/service-worker'
 // import { VitePWA } from 'vite-plugin-pwa'
-import { Key } from './types/cryptfns';
 
 // https://vitejs.dev/config/
 export default defineConfig({
