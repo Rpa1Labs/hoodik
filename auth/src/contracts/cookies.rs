@@ -50,6 +50,16 @@ where
         Ok((jwt, refresh))
     }
 
+    #[cfg(not(feature = "dev-front"))]
+    fn set_cookie_domain_and_secure(&self, cookie: &mut Cookie<'static>) {
+        cookie.set_domain(self.ctx().config.auth.cookie_domain.clone());
+    }
+
+    #[cfg(feature = "dev-front")]
+    fn set_cookie_domain_and_secure(&self, cookie: &mut Cookie<'static>) {
+        cookie.set_secure(false);
+    }
+
     /// Set configuration parameters for cookie security
     fn make_cookie(
         &self,
@@ -61,8 +71,7 @@ where
             .http_only(self.ctx().config.auth.cookie_http_only)
             .finish();
 
-        cookie.set_domain(self.ctx().config.auth.cookie_domain.clone());
-
+        self.set_cookie_domain_and_secure(&mut cookie);
         if destroy {
             cookie.set_expires(OffsetDateTime::from_unix_timestamp(0).unwrap());
         } else {

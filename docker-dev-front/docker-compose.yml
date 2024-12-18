@@ -3,14 +3,15 @@ services:
     container_name: hoodik-backend
     build: 
       context: ../
-      dockerfile: ./docker-dev/back/Dockerfile
+      dockerfile: ./docker-dev-front/back/Dockerfile
     ports:
       - "5443:5443"
     volumes:
       - ../:/hoodik
-      - ./certificates:/data/
-    depends_on:
-      - hoodik-frontend
+      - ./data:/data/
+    healthcheck:
+      test: ["CMD", "cat", "/data/hoodik.crt.pem", "/data/hoodik.key.pem"]
+      interval: 10s
   hoodik-frontend:
     container_name: hoodik-frontend
     environment:
@@ -20,10 +21,13 @@ services:
       - APP_URL=https://127.0.0.1:5443
     build:
       context: ../
-      dockerfile: ./docker-dev/front/Dockerfile
+      dockerfile: ./docker-dev-front/front/Dockerfile
     ports:
       - "5173:5173"
     volumes:
       - ../:/hoodik
-      - ./certificates:/data/
+      - ./data:/data/
+    depends_on:
+      hoodik-backend:
+        condition: service_healthy
 
