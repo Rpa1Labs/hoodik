@@ -13,6 +13,12 @@ export default defineConfig({
   base: '/',
   envDir: '../',
   envPrefix: 'APP_',
+  server: process.env.NODE_ENV !== 'production' ? {
+    https: {
+        key: path.resolve(__dirname, '/data/hoodik.key.pem'),
+        cert: path.resolve(__dirname, '/data/hoodik.crt.pem')
+      },
+  } : {},
   plugins: [
     vue(),
     vueJsx(),
